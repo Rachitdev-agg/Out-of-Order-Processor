@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include <vector>
 
 enum class OpCode { ADD, SUB, ADDI, MUL, DIV, REM, LW, SW, BEQ, BNE, BLT, BLE, J, SLT, SLTI, AND, OR, XOR, ANDI, ORI, XORI };
 enum class UnitType { ADDER, MULTIPLIER, DIVIDER, LOADSTORE, BRANCH, LOGIC };
@@ -33,11 +34,23 @@ struct ProcessorConfig {
 };
 
 struct ROBEntry {
-    // valid bit, ready bit, architectural register ID
-    // other fields as required
+    bool busy = false;
+    bool ready = false;
+    int dest = -1;        // architectural register index (-1 if no writeback)
+    int value = 0;
+    bool exception = false;
+    std::string type = "alu";  // "alu", "load", "store", "branch"
+    int pc = -1;          // PC of this instruction
 };
 
 struct RSEntry {
-    // value, tag, ready ... for both operands
-    // other fields as required
+    bool busy = false;
+    OpCode op;
+    int val1 = 0, val2 = 0;          // operand values when ready
+    int tag1 = -1, tag2 = -1;        // ROB tags we're waiting on
+    bool ready1 = false, ready2 = false;
+    int dest_tag = -1;                // ROB slot this result writes to
+    int imm = 0;
+    int predicted_pc = -1;            // for branches
+    int inst_pc = -1;                 // instruction PC, used to find oldest entry
 };

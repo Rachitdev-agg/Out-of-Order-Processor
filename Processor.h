@@ -1,7 +1,10 @@
 #pragma once
 #include <iostream>
 #include <fstream>
+#include <sstream>
 #include <vector>
+#include <string>
+#include <unordered_map>
 #include <iomanip>
 #include "Basics.h"
 #include "BranchPredictor.h"
@@ -28,51 +31,16 @@ public:
     LoadStoreQueue* lsq;
     BranchPredictor bp;
 
-    Processor(ProcessorConfig& config) {
-        pc = 0;
-        clock_cycle = 0;
-        ARF.resize(config.num_regs, 0);
-        Memory.resize(config.mem_size);
+    Processor(ProcessorConfig& config);
 
-        // Instantiate Hardware Units
-        // Adder
-        // Multiplier
-        // Divider
-        // Branch Computation
-        // Bitwise Logic
-        // Load-Store Unit
-    }
+    void loadProgram(const std::string& filename);
 
-    void loadProgram(const std::string& filename) {
-        std::ifstream file(filename);
-    }
-
-    void flush() {};
-
-    void broadcastOnCDB() {};
-
-    void stageFetch() {};
-
-    void stageDecode() {};
-
-    void stageExecuteAndBroadcast() {};
-
-    void stageCommit() {};
-
-    bool step() {
-        clock_cycle++;
-        return true; // return false if CPU has no more to do after this cycle
-    }
-
-    void dumpArchitecturalState() {
-        std::cout << "\n=== ARCHITECTURAL STATE (CYCLE " << clock_cycle << ") ===\n";
-        for (int i = 0; i < ARF.size(); i++) {
-            std::cout << "x" << i << ": " << std::setw(4) << ARF[i] << " | ";
-            if ((i+1) % 8 == 0) std::cout << std::endl;
-        }
-        if (exception) {
-            std::cout << "EXCEPTION raised by instruction " << pc + 1 << std::endl;
-        }
-        std::cout << "Branch Predictor Stats: " << bp.correct_predictions << "/" << bp.total_branches << " correct.\n";
-    }
+    void flush();
+    void broadcastOnCDB();
+    void stageFetch();
+    void stageDecode();
+    void stageExecuteAndBroadcast();
+    void stageCommit();
+    bool step();
+    void dumpArchitecturalState();
 };
