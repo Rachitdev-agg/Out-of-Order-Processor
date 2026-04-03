@@ -24,10 +24,29 @@ void ExecutionUnit::executeCycle() {
     has_result = false;
     has_exception = false;
 
+    // pick oldest ready RS entry and start executing it
+    int oldest_idx = -1;
+    int oldest_pc  = -1;
+    for (int i = 0; i < (int)rs.size(); i++) {
+        if (rs[i].busy && rs[i].ready1 && rs[i].ready2) {
+            if (oldest_idx == -1 || rs[i].inst_pc < oldest_pc) {
+                oldest_idx = i;
+                oldest_pc  = rs[i].inst_pc;
+            }
+        }
+    }
+    if (oldest_idx != -1) {
+        pipeline.push({rs[oldest_idx], latency});
+        rs[oldest_idx].busy = false;
+    }
+
     // tick down all in-flight instructions
-    if (!pipeline.empty()) {
-        auto& front = pipeline.front();
+    int p_size = pipeline.size();
+    for (int i = 0; i < p_size; i++) {
+        auto front = pipeline.front();
+        pipeline.pop();
         front.second--;
+        
         if (front.second == 0) {
             RSEntry& entry = front.first;
             int val1 = entry.val1;
@@ -67,23 +86,8 @@ void ExecutionUnit::executeCycle() {
             result_val = res;
             result_tag = entry.dest_tag;
             has_result = true;
-            pipeline.pop();
+        } else {
+            pipeline.push(front);
         }
-    }
-
-    // pick oldest ready RS entry and start executing it
-    int oldest_idx = -1;
-    int oldest_pc  = -1;
-    for (int i = 0; i < (int)rs.size(); i++) {
-        if (rs[i].busy && rs[i].ready1 && rs[i].ready2) {
-            if (oldest_idx == -1 || rs[i].inst_pc < oldest_pc) {
-                oldest_idx = i;
-                oldest_pc  = rs[i].inst_pc;
-            }
-        }
-    }
-    if (oldest_idx != -1) {
-        pipeline.push({rs[oldest_idx], latency});
-        rs[oldest_idx].busy = false;
     }
 }

@@ -6,13 +6,18 @@ Processor::Processor(ProcessorConfig& config) {
     ARF.resize(config.num_regs, 0);
     Memory.resize(config.mem_size);
 
+    RAT.assign(config.num_regs, -1);
+    ROB.resize(config.rob_size);
+    lsq_max_size = config.lsq_rs_size;
+
     // Instantiate Hardware Units
-    // Adder
-    // Multiplier
-    // Divider
-    // Branch Computation
-    // Bitwise Logic
-    // Load-Store Unit
+    units.push_back(ExecutionUnit(UnitType::ADDER, config.add_lat, config.adder_rs_size));
+    units.push_back(ExecutionUnit(UnitType::MULTIPLIER, config.mul_lat, config.mult_rs_size));
+    units.push_back(ExecutionUnit(UnitType::DIVIDER, config.div_lat, config.div_rs_size));
+    units.push_back(ExecutionUnit(UnitType::BRANCH, config.add_lat, config.br_rs_size));
+    units.push_back(ExecutionUnit(UnitType::LOGIC, config.logic_lat, config.logic_rs_size));
+
+    lsq = new LoadStoreQueue(config.mem_lat, config.lsq_rs_size);
 }
 
 void Processor::loadProgram(const std::string& filename) {
@@ -189,20 +194,279 @@ void Processor::loadProgram(const std::string& filename) {
     }
 }
 
-void Processor::flush() {}
+void Processor::flush() {
+    fetch_valid = false;
+    for (int i = 0; i < (int)RAT.size(); i++) RAT[i] = -1;
+    rob_head = 0;
+    rob_tail = 0;
+    rob_count = 0;
+    for (int i = 0; i < (int)units.size(); i++) {
+        for (int j = 0; j < (int)units[i].rs.size(); j++) {
+            units[i].rs[j].busy = false;
+        }
+        while (!units[i].pipeline.empty()) units[i].pipeline.pop();
+        units[i].has_result = false;
+        units[i].has_exception = false;
+    }
+    while (!lsq->lsq.empty()) lsq->lsq.pop();
+    lsq->has_result = false;
+    lsq->has_exception = false;
+    lsq->store_ready = false;
+    lsq->cycles_left = 0;
+}
 
-void Processor::broadcastOnCDB() {}
+void Processor::broadcastOnCDB() {
+    for (int i = 0; i < (int)units.size(); i++) {
+        if (units[i].has_result) {
+            int tag = units[i].result_tag;
+            int val = units[i].result_val;
+            for (auto& u : units) u.capture(tag, val);
+            lsq->capture(tag, val);
+            
+            if (tag != -1) {
+                ROB[tag].value = val;
+                ROB[tag].ready = true;
+                if (units[i].has_exception) {
+                    ROB[tag].exception = true;
+                }
+            }
+        }
+    }
+    if (lsq->has_result) {
+        int tag = lsq->result_tag;
+        int val = lsq->result_val;
+        for (auto& u : units) u.capture(tag, val);
+        lsq->capture(tag, val);
+        if (tag != -1) {
+            ROB[tag].value = val;
+            ROB[tag].ready = true;
+            if (lsq->has_exception) {
+                ROB[tag].exception = true;
+            }
+        }
+    }
+}
 
-void Processor::stageFetch() {}
+void Processor::stageFetch() {
+    if (fetch_valid) return; 
+    if (pc >= (int)inst_memory.size()) return;
 
-void Processor::stageDecode() {}
+    fetch_inst = inst_memory[pc];
+    fetch_pred_pc = bp.predict(pc, fetch_inst.imm, fetch_inst.op);
+    fetch_valid = true;
+    
+    if (fetch_inst.op == OpCode::J) {
+        pc = fetch_inst.imm;
+    } else if (fetch_inst.op == OpCode::BEQ || fetch_inst.op == OpCode::BNE ||
+        fetch_inst.op == OpCode::BLT || fetch_inst.op == OpCode::BLE) {
+        pc = fetch_pred_pc;
+    } else {
+        pc = pc + 1;
+    }
+}
 
-void Processor::stageExecuteAndBroadcast() {}
+void Processor::stageDecode() {
+    if (!fetch_valid) return;
 
-void Processor::stageCommit() {}
+    Instruction inst = fetch_inst;
+    if (rob_count == (int)ROB.size()) return;
+
+    UnitType type = UnitType::ADDER; 
+    if (inst.op == OpCode::ADD || inst.op == OpCode::SUB || inst.op == OpCode::ADDI) type = UnitType::ADDER;
+    else if (inst.op == OpCode::MUL) type = UnitType::MULTIPLIER;
+    else if (inst.op == OpCode::DIV || inst.op == OpCode::REM) type = UnitType::DIVIDER;
+    else if (inst.op == OpCode::LW || inst.op == OpCode::SW) type = UnitType::LOADSTORE;
+    else if (inst.op == OpCode::BEQ || inst.op == OpCode::BNE || inst.op == OpCode::BLT || inst.op == OpCode::BLE) type = UnitType::BRANCH;
+    else if (inst.op == OpCode::J) { } 
+    else { type = UnitType::LOGIC; }
+
+    int rs_idx = -1;
+    ExecutionUnit* target_unit = nullptr;
+    if (inst.op != OpCode::J) {
+        if (type == UnitType::LOADSTORE) {
+            if ((int)lsq->lsq.size() >= lsq_max_size) return; 
+        } else {
+            for (auto& u : units) {
+                if (u.name == type) {
+                    target_unit = &u;
+                    break;
+                }
+            }
+            if (target_unit) {
+                for (int i = 0; i < (int)target_unit->rs.size(); i++) {
+                    if (!target_unit->rs[i].busy) {
+                        rs_idx = i;
+                        break;
+                    }
+                }
+                if (rs_idx == -1) return;
+            }
+        }
+    }
+
+    int rob_idx = rob_tail;
+    rob_tail = (rob_tail + 1) % ROB.size();
+    rob_count++;
+
+    ROB[rob_idx].busy = true;
+    ROB[rob_idx].ready = false;
+    ROB[rob_idx].exception = false;
+    ROB[rob_idx].pc = inst.pc;
+    ROB[rob_idx].value = 0;
+    
+    if (inst.op == OpCode::SW || inst.op == OpCode::BEQ || inst.op == OpCode::BNE || 
+        inst.op == OpCode::BLT || inst.op == OpCode::BLE || inst.op == OpCode::J) {
+        ROB[rob_idx].dest = -1;
+        if (inst.op == OpCode::SW) ROB[rob_idx].type = "store";
+        else ROB[rob_idx].type = "branch";
+    } else {
+        if (inst.dest == 0) {
+            ROB[rob_idx].dest = -1;
+        } else {
+            ROB[rob_idx].dest = inst.dest;
+            // Removed RAT[inst.dest] = rob_idx; from here, moved to end.
+        }
+        if (inst.op == OpCode::LW) ROB[rob_idx].type = "load";
+        else ROB[rob_idx].type = "alu";
+    }
+
+    if (inst.op == OpCode::J) {
+        ROB[rob_idx].ready = true;
+    } else {
+        RSEntry rse;
+        rse.busy = true;
+        rse.op = inst.op;
+        rse.dest_tag = rob_idx;
+        rse.imm = inst.imm;
+        rse.inst_pc = inst.pc;
+        if (type == UnitType::BRANCH) rse.predicted_pc = fetch_pred_pc;
+
+        bool read_src1 = true, read_src2 = false;
+        
+        if (inst.op == OpCode::ADD || inst.op == OpCode::SUB || inst.op == OpCode::MUL || 
+            inst.op == OpCode::DIV || inst.op == OpCode::REM || inst.op == OpCode::AND ||
+            inst.op == OpCode::OR || inst.op == OpCode::XOR || inst.op == OpCode::SLT ||
+            inst.op == OpCode::SW || inst.op == OpCode::BEQ || inst.op == OpCode::BNE ||
+            inst.op == OpCode::BLT || inst.op == OpCode::BLE) {
+            read_src2 = true;
+        }
+
+        auto read_reg = [&](int reg, int& val, int& tag, bool& ready) {
+            if (reg == 0) {
+                val = 0; tag = -1; ready = true;
+            } else {
+                if (RAT[reg] != -1) {
+                    int p_tag = RAT[reg];
+                    if (ROB[p_tag].ready) {
+                        val = ROB[p_tag].value; tag = -1; ready = true;
+                    } else {
+                        tag = p_tag; ready = false;
+                    }
+                } else {
+                    val = ARF[reg]; tag = -1; ready = true;
+                }
+            }
+        };
+
+        if (read_src1) read_reg(inst.src1, rse.val1, rse.tag1, rse.ready1);
+        else rse.ready1 = true;
+        
+        if (read_src2) read_reg(inst.src2, rse.val2, rse.tag2, rse.ready2);
+        else rse.ready2 = true;
+
+        if (type == UnitType::LOADSTORE) {
+            lsq->lsq.push(rse);
+        } else {
+            target_unit->rs[rs_idx] = rse;
+        }
+    }
+    
+    // Update RAT AFTER reading sources!
+    if (inst.op != OpCode::SW && inst.op != OpCode::BEQ && inst.op != OpCode::BNE && 
+        inst.op != OpCode::BLT && inst.op != OpCode::BLE && inst.op != OpCode::J) {
+        if (inst.dest != 0) {
+            RAT[inst.dest] = rob_idx;
+        }
+    }
+
+    fetch_valid = false;
+}
+
+void Processor::stageExecuteAndBroadcast() {
+    for (auto& u : units) {
+        u.executeCycle();
+    }
+    lsq->executeCycle(Memory);
+}
+
+void Processor::stageCommit() {
+    if (rob_count == 0) return;
+    int head = rob_head;
+    ROBEntry& entry = ROB[head];
+
+    if (!entry.ready) {
+        if (entry.type == "store" && lsq->store_ready) {
+            if (lsq->store_addr < 0 || lsq->store_addr >= (int)Memory.size()) {
+                entry.exception = true; 
+            } else {
+                Memory[lsq->store_addr] = lsq->store_data;
+                entry.ready = true;
+            }
+        } else {
+            return;
+        }
+    }
+
+    if (entry.exception) {
+        pc = entry.pc;
+        exception = true;
+        flush();
+        return;
+    }
+
+    if (entry.type == "branch") {
+        Instruction inst = inst_memory[entry.pc];
+        if (inst.op != OpCode::J) {
+            int predicted_target = bp.predict(entry.pc, inst.imm, inst.op);
+            int actual_target = entry.value;
+            bool taken = (actual_target != entry.pc + 1);
+            bool correct = (predicted_target == actual_target);
+
+            bp.update(entry.pc, actual_target, taken, correct);
+
+            if (!correct) {
+                pc = actual_target;
+                flush();
+                return;
+            }
+        }
+    }
+
+    if (entry.type == "load" || entry.type == "alu") {
+        if (entry.dest != -1) {
+            ARF[entry.dest] = entry.value;
+            if (RAT[entry.dest] == head) {
+                RAT[entry.dest] = -1;
+            }
+        }
+    }
+
+    ROB[head].busy = false;
+    rob_head = (rob_head + 1) % ROB.size();
+    rob_count--;
+}
 
 bool Processor::step() {
+    if (exception) return false;
+    if (pc >= (int)inst_memory.size() && !fetch_valid && rob_count == 0) return false;
+    
     clock_cycle++;
+    stageCommit();
+    stageExecuteAndBroadcast();
+    broadcastOnCDB();
+    stageDecode();
+    stageFetch();
+
     return true;
 }
 

@@ -46,7 +46,12 @@ void LoadStoreQueue::executeCycle(std::vector<int>& Memory) {
         int addr = front.val1 + front.imm;
 
         if (front.op == OpCode::LW) {
-            result_val = Memory[addr];
+            if (addr < 0 || addr >= (int)Memory.size()) {
+                has_exception = true;
+                result_val = 0;
+            } else {
+                result_val = Memory[addr];
+            }
             result_tag = front.dest_tag;
             has_result = true;
         } else {  // SW

@@ -17,6 +17,9 @@ public:
     int clock_cycle;
 
     // pipeline registers
+    bool fetch_valid = false;
+    Instruction fetch_inst;
+    int fetch_pred_pc = -1;
 
     std::vector<Instruction> inst_memory;
 
@@ -26,6 +29,12 @@ public:
     bool exception = false; // exception bit
 
     // register alias table / reorder buffer
+    std::vector<int> RAT;
+    std::vector<ROBEntry> ROB;
+    int rob_head = 0;
+    int rob_tail = 0;
+    int rob_count = 0;
+    int lsq_max_size = 0;
 
     std::vector<ExecutionUnit> units;
     LoadStoreQueue* lsq;
