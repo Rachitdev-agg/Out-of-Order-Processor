@@ -197,8 +197,7 @@ void Processor::loadProgram(const std::string& filename) {
 void Processor::flush() {
     fetch_valid = false;
     for (int i = 0; i < (int)RAT.size(); i++) RAT[i] = -1;
-    rob_head = 0;
-    rob_tail = 0;
+    rob_tail = rob_head;
     rob_count = 0;
     for (int i = 0; i < (int)units.size(); i++) {
         for (int j = 0; j < (int)units[i].rs.size(); j++) {
@@ -272,12 +271,13 @@ void Processor::stageDecode() {
     if (rob_count == (int)ROB.size()) return;
 
     UnitType type = UnitType::ADDER; 
-    if (inst.op == OpCode::ADD || inst.op == OpCode::SUB || inst.op == OpCode::ADDI) type = UnitType::ADDER;
+    if (inst.op == OpCode::ADD || inst.op == OpCode::SUB || inst.op == OpCode::ADDI ||
+        inst.op == OpCode::SLT || inst.op == OpCode::SLTI) type = UnitType::ADDER;
     else if (inst.op == OpCode::MUL) type = UnitType::MULTIPLIER;
     else if (inst.op == OpCode::DIV || inst.op == OpCode::REM) type = UnitType::DIVIDER;
     else if (inst.op == OpCode::LW || inst.op == OpCode::SW) type = UnitType::LOADSTORE;
     else if (inst.op == OpCode::BEQ || inst.op == OpCode::BNE || inst.op == OpCode::BLT || inst.op == OpCode::BLE) type = UnitType::BRANCH;
-    else if (inst.op == OpCode::J) { } 
+    else if (inst.op == OpCode::J) { }
     else { type = UnitType::LOGIC; }
 
     int rs_idx = -1;
@@ -479,6 +479,7 @@ bool Processor::step() {
     
     clock_cycle++;
     stageCommit();
+    if (exception) return true;
     stageExecuteAndBroadcast();
     stageDecode();
     stageFetch();
