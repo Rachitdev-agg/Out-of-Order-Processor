@@ -313,6 +313,7 @@ void Processor::stageDecode() {
     ROB[rob_idx].exception = false;
     ROB[rob_idx].pc = inst.pc;
     ROB[rob_idx].value = 0;
+    ROB[rob_idx].predicted_pc = fetch_pred_pc;  // store prediction at decode time
     
     if (inst.op == OpCode::SW || inst.op == OpCode::BEQ || inst.op == OpCode::BNE || 
         inst.op == OpCode::BLT || inst.op == OpCode::BLE || inst.op == OpCode::J) {
@@ -397,6 +398,16 @@ void Processor::stageExecuteAndBroadcast() {
         u.executeCycle();
     }
     lsq->executeCycle(Memory);
+    
+    if (lsq->store_ready) {
+        int tag = lsq->store_tag;
+        if (tag != -1) {
+            ROB[tag].dest = lsq->store_addr; // Store memory addr here
+            ROB[tag].value = lsq->store_data; // Store memory value here
+            ROB[tag].ready = true;
+        }
+        lsq->store_ready = false;
+    }
 }
 
 void Processor::stageCommit() {
@@ -405,16 +416,7 @@ void Processor::stageCommit() {
     ROBEntry& entry = ROB[head];
 
     if (!entry.ready) {
-        if (entry.type == "store" && lsq->store_ready) {
-            if (lsq->store_addr < 0 || lsq->store_addr >= (int)Memory.size()) {
-                entry.exception = true; 
-            } else {
-                Memory[lsq->store_addr] = lsq->store_data;
-                entry.ready = true;
-            }
-        } else {
-            return;
-        }
+        return;
     }
 
     if (entry.exception) {
@@ -424,10 +426,21 @@ void Processor::stageCommit() {
         return;
     }
 
+    if (entry.type == "store") {
+        if (entry.dest < 0 || entry.dest >= (int)Memory.size()) {
+            pc = entry.pc;
+            exception = true;
+            flush();
+            return;
+        } else {
+            Memory[entry.dest] = entry.value;
+        }
+    }
+
     if (entry.type == "branch") {
         Instruction inst = inst_memory[entry.pc];
         if (inst.op != OpCode::J) {
-            int predicted_target = bp.predict(entry.pc, inst.imm, inst.op);
+            int predicted_target = entry.predicted_pc;  // read from ROB (stored at decode)
             int actual_target = entry.value;
             bool taken = (actual_target != entry.pc + 1);
             bool correct = (predicted_target == actual_target);
@@ -436,6 +449,10 @@ void Processor::stageCommit() {
 
             if (!correct) {
                 pc = actual_target;
+                // Retire this branch entry before flushing the rest
+                ROB[head].busy = false;
+                rob_head = (rob_head + 1) % ROB.size();
+                rob_count--;
                 flush();
                 return;
             }
@@ -463,9 +480,9 @@ bool Processor::step() {
     clock_cycle++;
     stageCommit();
     stageExecuteAndBroadcast();
-    broadcastOnCDB();
     stageDecode();
     stageFetch();
+    broadcastOnCDB();
 
     return true;
 }

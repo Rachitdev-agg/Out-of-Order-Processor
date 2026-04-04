@@ -2,7 +2,7 @@
 
 LoadStoreQueue::LoadStoreQueue(int lat, int size) {
     latency = lat;
-    cycles_left = 0;
+    cycles_left = lat;
 }
 
 void LoadStoreQueue::capture(int tag, int val) {
@@ -30,12 +30,20 @@ void LoadStoreQueue::executeCycle(std::vector<int>& Memory) {
     has_exception = false;
     store_ready = false;
 
-    if (lsq.empty()) return;
+    if (lsq.empty()) {
+        cycles_left = latency; // Reset latency for next operation
+        return;
+    }
 
     RSEntry& front = lsq.front();
 
     // wait until both operands are ready before starting
-    if (!front.ready1 || !front.ready2) return;
+    if (!front.ready1 || !front.ready2) {
+        cycles_left = latency; // Reset latency if stalled on operands
+        return;
+    }
+
+    cycles_left--;
 
     if (cycles_left == 0) {
         int addr = front.val1 + front.imm;
@@ -53,11 +61,10 @@ void LoadStoreQueue::executeCycle(std::vector<int>& Memory) {
             store_addr = addr;
             store_data = front.val2;
             store_ready = true;
+            store_tag = front.dest_tag;
         }
 
-        lsq.pop();
-        cycles_left = latency;
+        lsq.pop(); // Both loads and stores pop immediately
+        cycles_left = latency; // reset for next instruction
     }
-    cycles_left--;
-    
 }

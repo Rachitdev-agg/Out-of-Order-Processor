@@ -41,6 +41,7 @@ struct ROBEntry {
     bool exception = false;
     std::string type = "alu";  // "alu", "load", "store", "branch"
     int pc = -1;          // PC of this instruction
+    int predicted_pc = -1;  // predicted next-PC stored at decode time (for branches)
 };
 
 struct RSEntry {

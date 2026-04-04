@@ -21,6 +21,7 @@ public:
     // exposed to processor at commit time for stores
     int store_addr = 0;
     int store_data = 0;
+    int store_tag = -1;
 
     LoadStoreQueue(int lat, int size);
 
