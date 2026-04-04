@@ -1,0 +1,668 @@
+Cycle 1:
+  Fetch: 1 PC=1 count=0
+Cycle 2:
+  Fetch: 1 PC=2 count=1
+  ROB 0 pc=0 type=alu ready=0
+Cycle 3:
+  Fetch: 1 PC=3 count=2
+  ROB 0 pc=0 type=alu ready=0
+  ROB 1 pc=1 type=alu ready=0
+Cycle 4:
+  Fetch: 1 PC=4 count=3
+  ROB 0 pc=0 type=alu ready=1
+  ROB 1 pc=1 type=alu ready=0
+  ROB 2 pc=2 type=load ready=0
+Cycle 5:
+  Fetch: 1 PC=5 count=3
+  ROB 1 pc=1 type=alu ready=1
+  ROB 2 pc=2 type=load ready=0
+  ROB 3 pc=3 type=load ready=0
+Cycle 6:
+  Fetch: 1 PC=6 count=3
+  ROB 2 pc=2 type=load ready=0
+  ROB 3 pc=3 type=load ready=0
+  ROB 4 pc=4 type=alu ready=0
+Cycle 7:
+  Fetch: 1 PC=7 count=4
+  ROB 2 pc=2 type=load ready=0
+  ROB 3 pc=3 type=load ready=0
+  ROB 4 pc=4 type=alu ready=0
+  ROB 5 pc=5 type=store ready=0
+Cycle 8:
+  Fetch: 1 PC=2 count=5
+  ROB 2 pc=2 type=load ready=0
+  ROB 3 pc=3 type=load ready=0
+  ROB 4 pc=4 type=alu ready=0
+  ROB 5 pc=5 type=store ready=0
+  ROB 6 pc=6 type=alu ready=0
+Cycle 9:
+  Fetch: 1 PC=3 count=6
+  ROB 2 pc=2 type=load ready=1
+  ROB 3 pc=3 type=load ready=0
+  ROB 4 pc=4 type=alu ready=0
+  ROB 5 pc=5 type=store ready=0
+  ROB 6 pc=6 type=alu ready=0
+  ROB 7 pc=7 type=branch ready=0
+Cycle 10:
+  Fetch: 1 PC=4 count=6
+  ROB 3 pc=3 type=load ready=0
+  ROB 4 pc=4 type=alu ready=0
+  ROB 5 pc=5 type=store ready=0
+  ROB 6 pc=6 type=alu ready=1
+  ROB 7 pc=7 type=branch ready=0
+  ROB 8 pc=2 type=load ready=0
+Cycle 11:
+  Fetch: 1 PC=5 count=7
+  ROB 3 pc=3 type=load ready=0
+  ROB 4 pc=4 type=alu ready=0
+  ROB 5 pc=5 type=store ready=0
+  ROB 6 pc=6 type=alu ready=1
+  ROB 7 pc=7 type=branch ready=0
+  ROB 8 pc=2 type=load ready=0
+  ROB 9 pc=3 type=load ready=0
+Cycle 12:
+  Fetch: 1 PC=6 count=8
+  ROB 3 pc=3 type=load ready=0
+  ROB 4 pc=4 type=alu ready=0
+  ROB 5 pc=5 type=store ready=0
+  ROB 6 pc=6 type=alu ready=1
+  ROB 7 pc=7 type=branch ready=1
+  ROB 8 pc=2 type=load ready=0
+  ROB 9 pc=3 type=load ready=0
+  ROB 10 pc=4 type=alu ready=0
+Cycle 13:
+  Fetch: 1 PC=7 count=9
+  ROB 3 pc=3 type=load ready=1
+  ROB 4 pc=4 type=alu ready=0
+  ROB 5 pc=5 type=store ready=0
+  ROB 6 pc=6 type=alu ready=1
+  ROB 7 pc=7 type=branch ready=1
+  ROB 8 pc=2 type=load ready=0
+  ROB 9 pc=3 type=load ready=0
+  ROB 10 pc=4 type=alu ready=0
+  ROB 11 pc=5 type=store ready=0
+Cycle 14:
+  Fetch: 1 PC=2 count=9
+  ROB 4 pc=4 type=alu ready=0
+  ROB 5 pc=5 type=store ready=0
+  ROB 6 pc=6 type=alu ready=1
+  ROB 7 pc=7 type=branch ready=1
+  ROB 8 pc=2 type=load ready=0
+  ROB 9 pc=3 type=load ready=0
+  ROB 10 pc=4 type=alu ready=0
+  ROB 11 pc=5 type=store ready=0
+  ROB 12 pc=6 type=alu ready=0
+Cycle 15:
+  Fetch: 1 PC=3 count=10
+  ROB 4 pc=4 type=alu ready=1
+  ROB 5 pc=5 type=store ready=0
+  ROB 6 pc=6 type=alu ready=1
+  ROB 7 pc=7 type=branch ready=1
+  ROB 8 pc=2 type=load ready=0
+  ROB 9 pc=3 type=load ready=0
+  ROB 10 pc=4 type=alu ready=0
+  ROB 11 pc=5 type=store ready=0
+  ROB 12 pc=6 type=alu ready=0
+  ROB 13 pc=7 type=branch ready=0
+Cycle 16:
+  Fetch: 1 PC=4 count=10
+  ROB 5 pc=5 type=store ready=1
+  ROB 6 pc=6 type=alu ready=1
+  ROB 7 pc=7 type=branch ready=1
+  ROB 8 pc=2 type=load ready=0
+  ROB 9 pc=3 type=load ready=0
+  ROB 10 pc=4 type=alu ready=0
+  ROB 11 pc=5 type=store ready=0
+  ROB 12 pc=6 type=alu ready=1
+  ROB 13 pc=7 type=branch ready=0
+  ROB 14 pc=2 type=load ready=0
+Cycle 17:
+  Fetch: 1 PC=5 count=10
+  ROB 6 pc=6 type=alu ready=1
+  ROB 7 pc=7 type=branch ready=1
+  ROB 8 pc=2 type=load ready=0
+  ROB 9 pc=3 type=load ready=0
+  ROB 10 pc=4 type=alu ready=0
+  ROB 11 pc=5 type=store ready=0
+  ROB 12 pc=6 type=alu ready=1
+  ROB 13 pc=7 type=branch ready=0
+  ROB 14 pc=2 type=load ready=0
+  ROB 15 pc=3 type=load ready=0
+Cycle 18:
+  Fetch: 1 PC=6 count=10
+  ROB 7 pc=7 type=branch ready=1
+  ROB 8 pc=2 type=load ready=0
+  ROB 9 pc=3 type=load ready=0
+  ROB 10 pc=4 type=alu ready=0
+  ROB 11 pc=5 type=store ready=0
+  ROB 12 pc=6 type=alu ready=1
+  ROB 13 pc=7 type=branch ready=1
+  ROB 14 pc=2 type=load ready=0
+  ROB 15 pc=3 type=load ready=0
+  ROB 16 pc=4 type=alu ready=0
+Cycle 19:
+  Fetch: 1 PC=7 count=10
+  ROB 8 pc=2 type=load ready=0
+  ROB 9 pc=3 type=load ready=0
+  ROB 10 pc=4 type=alu ready=0
+  ROB 11 pc=5 type=store ready=0
+  ROB 12 pc=6 type=alu ready=1
+  ROB 13 pc=7 type=branch ready=1
+  ROB 14 pc=2 type=load ready=0
+  ROB 15 pc=3 type=load ready=0
+  ROB 16 pc=4 type=alu ready=0
+  ROB 17 pc=5 type=store ready=0
+Cycle 20:
+  Fetch: 1 PC=2 count=11
+  ROB 8 pc=2 type=load ready=1
+  ROB 9 pc=3 type=load ready=0
+  ROB 10 pc=4 type=alu ready=0
+  ROB 11 pc=5 type=store ready=0
+  ROB 12 pc=6 type=alu ready=1
+  ROB 13 pc=7 type=branch ready=1
+  ROB 14 pc=2 type=load ready=0
+  ROB 15 pc=3 type=load ready=0
+  ROB 16 pc=4 type=alu ready=0
+  ROB 17 pc=5 type=store ready=0
+  ROB 18 pc=6 type=alu ready=0
+Cycle 21:
+  Fetch: 1 PC=3 count=11
+  ROB 9 pc=3 type=load ready=0
+  ROB 10 pc=4 type=alu ready=0
+  ROB 11 pc=5 type=store ready=0
+  ROB 12 pc=6 type=alu ready=1
+  ROB 13 pc=7 type=branch ready=1
+  ROB 14 pc=2 type=load ready=0
+  ROB 15 pc=3 type=load ready=0
+  ROB 16 pc=4 type=alu ready=0
+  ROB 17 pc=5 type=store ready=0
+  ROB 18 pc=6 type=alu ready=0
+  ROB 19 pc=7 type=branch ready=0
+Cycle 22:
+  Fetch: 1 PC=4 count=12
+  ROB 9 pc=3 type=load ready=0
+  ROB 10 pc=4 type=alu ready=0
+  ROB 11 pc=5 type=store ready=0
+  ROB 12 pc=6 type=alu ready=1
+  ROB 13 pc=7 type=branch ready=1
+  ROB 14 pc=2 type=load ready=0
+  ROB 15 pc=3 type=load ready=0
+  ROB 16 pc=4 type=alu ready=0
+  ROB 17 pc=5 type=store ready=0
+  ROB 18 pc=6 type=alu ready=1
+  ROB 19 pc=7 type=branch ready=0
+  ROB 20 pc=2 type=load ready=0
+Cycle 23:
+  Fetch: 1 PC=5 count=13
+  ROB 9 pc=3 type=load ready=0
+  ROB 10 pc=4 type=alu ready=0
+  ROB 11 pc=5 type=store ready=0
+  ROB 12 pc=6 type=alu ready=1
+  ROB 13 pc=7 type=branch ready=1
+  ROB 14 pc=2 type=load ready=0
+  ROB 15 pc=3 type=load ready=0
+  ROB 16 pc=4 type=alu ready=0
+  ROB 17 pc=5 type=store ready=0
+  ROB 18 pc=6 type=alu ready=1
+  ROB 19 pc=7 type=branch ready=0
+  ROB 20 pc=2 type=load ready=0
+  ROB 21 pc=3 type=load ready=0
+Cycle 24:
+  Fetch: 1 PC=6 count=14
+  ROB 9 pc=3 type=load ready=1
+  ROB 10 pc=4 type=alu ready=0
+  ROB 11 pc=5 type=store ready=0
+  ROB 12 pc=6 type=alu ready=1
+  ROB 13 pc=7 type=branch ready=1
+  ROB 14 pc=2 type=load ready=0
+  ROB 15 pc=3 type=load ready=0
+  ROB 16 pc=4 type=alu ready=0
+  ROB 17 pc=5 type=store ready=0
+  ROB 18 pc=6 type=alu ready=1
+  ROB 19 pc=7 type=branch ready=1
+  ROB 20 pc=2 type=load ready=0
+  ROB 21 pc=3 type=load ready=0
+  ROB 22 pc=4 type=alu ready=0
+Cycle 25:
+  Fetch: 1 PC=7 count=14
+  ROB 10 pc=4 type=alu ready=0
+  ROB 11 pc=5 type=store ready=0
+  ROB 12 pc=6 type=alu ready=1
+  ROB 13 pc=7 type=branch ready=1
+  ROB 14 pc=2 type=load ready=0
+  ROB 15 pc=3 type=load ready=0
+  ROB 16 pc=4 type=alu ready=0
+  ROB 17 pc=5 type=store ready=0
+  ROB 18 pc=6 type=alu ready=1
+  ROB 19 pc=7 type=branch ready=1
+  ROB 20 pc=2 type=load ready=0
+  ROB 21 pc=3 type=load ready=0
+  ROB 22 pc=4 type=alu ready=0
+  ROB 23 pc=5 type=store ready=0
+Cycle 26:
+  Fetch: 1 PC=2 count=15
+  ROB 10 pc=4 type=alu ready=1
+  ROB 11 pc=5 type=store ready=0
+  ROB 12 pc=6 type=alu ready=1
+  ROB 13 pc=7 type=branch ready=1
+  ROB 14 pc=2 type=load ready=0
+  ROB 15 pc=3 type=load ready=0
+  ROB 16 pc=4 type=alu ready=0
+  ROB 17 pc=5 type=store ready=0
+  ROB 18 pc=6 type=alu ready=1
+  ROB 19 pc=7 type=branch ready=1
+  ROB 20 pc=2 type=load ready=0
+  ROB 21 pc=3 type=load ready=0
+  ROB 22 pc=4 type=alu ready=0
+  ROB 23 pc=5 type=store ready=0
+  ROB 24 pc=6 type=alu ready=0
+Cycle 27:
+  Fetch: 1 PC=3 count=15
+  ROB 11 pc=5 type=store ready=1
+  ROB 12 pc=6 type=alu ready=1
+  ROB 13 pc=7 type=branch ready=1
+  ROB 14 pc=2 type=load ready=0
+  ROB 15 pc=3 type=load ready=0
+  ROB 16 pc=4 type=alu ready=0
+  ROB 17 pc=5 type=store ready=0
+  ROB 18 pc=6 type=alu ready=1
+  ROB 19 pc=7 type=branch ready=1
+  ROB 20 pc=2 type=load ready=0
+  ROB 21 pc=3 type=load ready=0
+  ROB 22 pc=4 type=alu ready=0
+  ROB 23 pc=5 type=store ready=0
+  ROB 24 pc=6 type=alu ready=0
+  ROB 25 pc=7 type=branch ready=0
+Cycle 28:
+  Fetch: 1 PC=4 count=15
+  ROB 12 pc=6 type=alu ready=1
+  ROB 13 pc=7 type=branch ready=1
+  ROB 14 pc=2 type=load ready=0
+  ROB 15 pc=3 type=load ready=0
+  ROB 16 pc=4 type=alu ready=0
+  ROB 17 pc=5 type=store ready=0
+  ROB 18 pc=6 type=alu ready=1
+  ROB 19 pc=7 type=branch ready=1
+  ROB 20 pc=2 type=load ready=0
+  ROB 21 pc=3 type=load ready=0
+  ROB 22 pc=4 type=alu ready=0
+  ROB 23 pc=5 type=store ready=0
+  ROB 24 pc=6 type=alu ready=1
+  ROB 25 pc=7 type=branch ready=0
+  ROB 26 pc=2 type=load ready=0
+Cycle 29:
+  Fetch: 1 PC=5 count=15
+  ROB 13 pc=7 type=branch ready=1
+  ROB 14 pc=2 type=load ready=0
+  ROB 15 pc=3 type=load ready=0
+  ROB 16 pc=4 type=alu ready=0
+  ROB 17 pc=5 type=store ready=0
+  ROB 18 pc=6 type=alu ready=1
+  ROB 19 pc=7 type=branch ready=1
+  ROB 20 pc=2 type=load ready=0
+  ROB 21 pc=3 type=load ready=0
+  ROB 22 pc=4 type=alu ready=0
+  ROB 23 pc=5 type=store ready=0
+  ROB 24 pc=6 type=alu ready=1
+  ROB 25 pc=7 type=branch ready=0
+  ROB 26 pc=2 type=load ready=0
+  ROB 27 pc=3 type=load ready=0
+Cycle 30:
+  Fetch: 1 PC=6 count=15
+  ROB 14 pc=2 type=load ready=0
+  ROB 15 pc=3 type=load ready=0
+  ROB 16 pc=4 type=alu ready=0
+  ROB 17 pc=5 type=store ready=0
+  ROB 18 pc=6 type=alu ready=1
+  ROB 19 pc=7 type=branch ready=1
+  ROB 20 pc=2 type=load ready=0
+  ROB 21 pc=3 type=load ready=0
+  ROB 22 pc=4 type=alu ready=0
+  ROB 23 pc=5 type=store ready=0
+  ROB 24 pc=6 type=alu ready=1
+  ROB 25 pc=7 type=branch ready=1
+  ROB 26 pc=2 type=load ready=0
+  ROB 27 pc=3 type=load ready=0
+  ROB 28 pc=4 type=alu ready=0
+Cycle 31:
+  Fetch: 1 PC=7 count=16
+  ROB 14 pc=2 type=load ready=1
+  ROB 15 pc=3 type=load ready=0
+  ROB 16 pc=4 type=alu ready=0
+  ROB 17 pc=5 type=store ready=0
+  ROB 18 pc=6 type=alu ready=1
+  ROB 19 pc=7 type=branch ready=1
+  ROB 20 pc=2 type=load ready=0
+  ROB 21 pc=3 type=load ready=0
+  ROB 22 pc=4 type=alu ready=0
+  ROB 23 pc=5 type=store ready=0
+  ROB 24 pc=6 type=alu ready=1
+  ROB 25 pc=7 type=branch ready=1
+  ROB 26 pc=2 type=load ready=0
+  ROB 27 pc=3 type=load ready=0
+  ROB 28 pc=4 type=alu ready=0
+  ROB 29 pc=5 type=store ready=0
+Cycle 32:
+  Fetch: 1 PC=2 count=16
+  ROB 15 pc=3 type=load ready=0
+  ROB 16 pc=4 type=alu ready=0
+  ROB 17 pc=5 type=store ready=0
+  ROB 18 pc=6 type=alu ready=1
+  ROB 19 pc=7 type=branch ready=1
+  ROB 20 pc=2 type=load ready=0
+  ROB 21 pc=3 type=load ready=0
+  ROB 22 pc=4 type=alu ready=0
+  ROB 23 pc=5 type=store ready=0
+  ROB 24 pc=6 type=alu ready=1
+  ROB 25 pc=7 type=branch ready=1
+  ROB 26 pc=2 type=load ready=0
+  ROB 27 pc=3 type=load ready=0
+  ROB 28 pc=4 type=alu ready=0
+  ROB 29 pc=5 type=store ready=0
+  ROB 30 pc=6 type=alu ready=0
+Cycle 33:
+  Fetch: 1 PC=3 count=17
+  ROB 15 pc=3 type=load ready=0
+  ROB 16 pc=4 type=alu ready=0
+  ROB 17 pc=5 type=store ready=0
+  ROB 18 pc=6 type=alu ready=1
+  ROB 19 pc=7 type=branch ready=1
+  ROB 20 pc=2 type=load ready=0
+  ROB 21 pc=3 type=load ready=0
+  ROB 22 pc=4 type=alu ready=0
+  ROB 23 pc=5 type=store ready=0
+  ROB 24 pc=6 type=alu ready=1
+  ROB 25 pc=7 type=branch ready=1
+  ROB 26 pc=2 type=load ready=0
+  ROB 27 pc=3 type=load ready=0
+  ROB 28 pc=4 type=alu ready=0
+  ROB 29 pc=5 type=store ready=0
+  ROB 30 pc=6 type=alu ready=0
+  ROB 31 pc=7 type=branch ready=0
+Cycle 34:
+  Fetch: 1 PC=4 count=18
+  ROB 15 pc=3 type=load ready=0
+  ROB 16 pc=4 type=alu ready=0
+  ROB 17 pc=5 type=store ready=0
+  ROB 18 pc=6 type=alu ready=1
+  ROB 19 pc=7 type=branch ready=1
+  ROB 20 pc=2 type=load ready=0
+  ROB 21 pc=3 type=load ready=0
+  ROB 22 pc=4 type=alu ready=0
+  ROB 23 pc=5 type=store ready=0
+  ROB 24 pc=6 type=alu ready=1
+  ROB 25 pc=7 type=branch ready=1
+  ROB 26 pc=2 type=load ready=0
+  ROB 27 pc=3 type=load ready=0
+  ROB 28 pc=4 type=alu ready=0
+  ROB 29 pc=5 type=store ready=0
+  ROB 30 pc=6 type=alu ready=1
+  ROB 31 pc=7 type=branch ready=0
+  ROB 32 pc=2 type=load ready=0
+Cycle 35:
+  Fetch: 1 PC=5 count=19
+  ROB 15 pc=3 type=load ready=1
+  ROB 16 pc=4 type=alu ready=0
+  ROB 17 pc=5 type=store ready=0
+  ROB 18 pc=6 type=alu ready=1
+  ROB 19 pc=7 type=branch ready=1
+  ROB 20 pc=2 type=load ready=0
+  ROB 21 pc=3 type=load ready=0
+  ROB 22 pc=4 type=alu ready=0
+  ROB 23 pc=5 type=store ready=0
+  ROB 24 pc=6 type=alu ready=1
+  ROB 25 pc=7 type=branch ready=1
+  ROB 26 pc=2 type=load ready=0
+  ROB 27 pc=3 type=load ready=0
+  ROB 28 pc=4 type=alu ready=0
+  ROB 29 pc=5 type=store ready=0
+  ROB 30 pc=6 type=alu ready=1
+  ROB 31 pc=7 type=branch ready=0
+  ROB 32 pc=2 type=load ready=0
+  ROB 33 pc=3 type=load ready=0
+Cycle 36:
+  Fetch: 1 PC=6 count=19
+  ROB 16 pc=4 type=alu ready=0
+  ROB 17 pc=5 type=store ready=0
+  ROB 18 pc=6 type=alu ready=1
+  ROB 19 pc=7 type=branch ready=1
+  ROB 20 pc=2 type=load ready=0
+  ROB 21 pc=3 type=load ready=0
+  ROB 22 pc=4 type=alu ready=0
+  ROB 23 pc=5 type=store ready=0
+  ROB 24 pc=6 type=alu ready=1
+  ROB 25 pc=7 type=branch ready=1
+  ROB 26 pc=2 type=load ready=0
+  ROB 27 pc=3 type=load ready=0
+  ROB 28 pc=4 type=alu ready=0
+  ROB 29 pc=5 type=store ready=0
+  ROB 30 pc=6 type=alu ready=1
+  ROB 31 pc=7 type=branch ready=1
+  ROB 32 pc=2 type=load ready=0
+  ROB 33 pc=3 type=load ready=0
+  ROB 34 pc=4 type=alu ready=0
+Cycle 37:
+  Fetch: 1 PC=7 count=20
+  ROB 16 pc=4 type=alu ready=1
+  ROB 17 pc=5 type=store ready=0
+  ROB 18 pc=6 type=alu ready=1
+  ROB 19 pc=7 type=branch ready=1
+  ROB 20 pc=2 type=load ready=0
+  ROB 21 pc=3 type=load ready=0
+  ROB 22 pc=4 type=alu ready=0
+  ROB 23 pc=5 type=store ready=0
+  ROB 24 pc=6 type=alu ready=1
+  ROB 25 pc=7 type=branch ready=1
+  ROB 26 pc=2 type=load ready=0
+  ROB 27 pc=3 type=load ready=0
+  ROB 28 pc=4 type=alu ready=0
+  ROB 29 pc=5 type=store ready=0
+  ROB 30 pc=6 type=alu ready=1
+  ROB 31 pc=7 type=branch ready=1
+  ROB 32 pc=2 type=load ready=0
+  ROB 33 pc=3 type=load ready=0
+  ROB 34 pc=4 type=alu ready=0
+  ROB 35 pc=5 type=store ready=0
+Cycle 38:
+  Fetch: 1 PC=2 count=20
+  ROB 17 pc=5 type=store ready=1
+  ROB 18 pc=6 type=alu ready=1
+  ROB 19 pc=7 type=branch ready=1
+  ROB 20 pc=2 type=load ready=0
+  ROB 21 pc=3 type=load ready=0
+  ROB 22 pc=4 type=alu ready=0
+  ROB 23 pc=5 type=store ready=0
+  ROB 24 pc=6 type=alu ready=1
+  ROB 25 pc=7 type=branch ready=1
+  ROB 26 pc=2 type=load ready=0
+  ROB 27 pc=3 type=load ready=0
+  ROB 28 pc=4 type=alu ready=0
+  ROB 29 pc=5 type=store ready=0
+  ROB 30 pc=6 type=alu ready=1
+  ROB 31 pc=7 type=branch ready=1
+  ROB 32 pc=2 type=load ready=0
+  ROB 33 pc=3 type=load ready=0
+  ROB 34 pc=4 type=alu ready=0
+  ROB 35 pc=5 type=store ready=0
+  ROB 36 pc=6 type=alu ready=0
+Cycle 39:
+  Fetch: 1 PC=3 count=20
+  ROB 18 pc=6 type=alu ready=1
+  ROB 19 pc=7 type=branch ready=1
+  ROB 20 pc=2 type=load ready=0
+  ROB 21 pc=3 type=load ready=0
+  ROB 22 pc=4 type=alu ready=0
+  ROB 23 pc=5 type=store ready=0
+  ROB 24 pc=6 type=alu ready=1
+  ROB 25 pc=7 type=branch ready=1
+  ROB 26 pc=2 type=load ready=0
+  ROB 27 pc=3 type=load ready=0
+  ROB 28 pc=4 type=alu ready=0
+  ROB 29 pc=5 type=store ready=0
+  ROB 30 pc=6 type=alu ready=1
+  ROB 31 pc=7 type=branch ready=1
+  ROB 32 pc=2 type=load ready=0
+  ROB 33 pc=3 type=load ready=0
+  ROB 34 pc=4 type=alu ready=0
+  ROB 35 pc=5 type=store ready=0
+  ROB 36 pc=6 type=alu ready=0
+  ROB 37 pc=7 type=branch ready=0
+Cycle 40:
+  Fetch: 1 PC=4 count=20
+  ROB 19 pc=7 type=branch ready=1
+  ROB 20 pc=2 type=load ready=0
+  ROB 21 pc=3 type=load ready=0
+  ROB 22 pc=4 type=alu ready=0
+  ROB 23 pc=5 type=store ready=0
+  ROB 24 pc=6 type=alu ready=1
+  ROB 25 pc=7 type=branch ready=1
+  ROB 26 pc=2 type=load ready=0
+  ROB 27 pc=3 type=load ready=0
+  ROB 28 pc=4 type=alu ready=0
+  ROB 29 pc=5 type=store ready=0
+  ROB 30 pc=6 type=alu ready=1
+  ROB 31 pc=7 type=branch ready=1
+  ROB 32 pc=2 type=load ready=0
+  ROB 33 pc=3 type=load ready=0
+  ROB 34 pc=4 type=alu ready=0
+  ROB 35 pc=5 type=store ready=0
+  ROB 36 pc=6 type=alu ready=1
+  ROB 37 pc=7 type=branch ready=0
+  ROB 38 pc=2 type=load ready=0
+Cycle 41:
+  Fetch: 1 PC=5 count=20
+  ROB 20 pc=2 type=load ready=0
+  ROB 21 pc=3 type=load ready=0
+  ROB 22 pc=4 type=alu ready=0
+  ROB 23 pc=5 type=store ready=0
+  ROB 24 pc=6 type=alu ready=1
+  ROB 25 pc=7 type=branch ready=1
+  ROB 26 pc=2 type=load ready=0
+  ROB 27 pc=3 type=load ready=0
+  ROB 28 pc=4 type=alu ready=0
+  ROB 29 pc=5 type=store ready=0
+  ROB 30 pc=6 type=alu ready=1
+  ROB 31 pc=7 type=branch ready=1
+  ROB 32 pc=2 type=load ready=0
+  ROB 33 pc=3 type=load ready=0
+  ROB 34 pc=4 type=alu ready=0
+  ROB 35 pc=5 type=store ready=0
+  ROB 36 pc=6 type=alu ready=1
+  ROB 37 pc=7 type=branch ready=0
+  ROB 38 pc=2 type=load ready=0
+  ROB 39 pc=3 type=load ready=0
+Cycle 42:
+  Fetch: 1 PC=6 count=21
+  ROB 20 pc=2 type=load ready=1
+  ROB 21 pc=3 type=load ready=0
+  ROB 22 pc=4 type=alu ready=0
+  ROB 23 pc=5 type=store ready=0
+  ROB 24 pc=6 type=alu ready=1
+  ROB 25 pc=7 type=branch ready=1
+  ROB 26 pc=2 type=load ready=0
+  ROB 27 pc=3 type=load ready=0
+  ROB 28 pc=4 type=alu ready=0
+  ROB 29 pc=5 type=store ready=0
+  ROB 30 pc=6 type=alu ready=1
+  ROB 31 pc=7 type=branch ready=1
+  ROB 32 pc=2 type=load ready=0
+  ROB 33 pc=3 type=load ready=0
+  ROB 34 pc=4 type=alu ready=0
+  ROB 35 pc=5 type=store ready=0
+  ROB 36 pc=6 type=alu ready=1
+  ROB 37 pc=7 type=branch ready=1
+  ROB 38 pc=2 type=load ready=0
+  ROB 39 pc=3 type=load ready=0
+  ROB 40 pc=4 type=alu ready=0
+Cycle 43:
+  Fetch: 1 PC=7 count=21
+  ROB 21 pc=3 type=load ready=0
+  ROB 22 pc=4 type=alu ready=0
+  ROB 23 pc=5 type=store ready=0
+  ROB 24 pc=6 type=alu ready=1
+  ROB 25 pc=7 type=branch ready=1
+  ROB 26 pc=2 type=load ready=0
+  ROB 27 pc=3 type=load ready=0
+  ROB 28 pc=4 type=alu ready=0
+  ROB 29 pc=5 type=store ready=0
+  ROB 30 pc=6 type=alu ready=1
+  ROB 31 pc=7 type=branch ready=1
+  ROB 32 pc=2 type=load ready=0
+  ROB 33 pc=3 type=load ready=0
+  ROB 34 pc=4 type=alu ready=0
+  ROB 35 pc=5 type=store ready=0
+  ROB 36 pc=6 type=alu ready=1
+  ROB 37 pc=7 type=branch ready=1
+  ROB 38 pc=2 type=load ready=0
+  ROB 39 pc=3 type=load ready=0
+  ROB 40 pc=4 type=alu ready=0
+  ROB 41 pc=5 type=store ready=0
+Cycle 44:
+  Fetch: 1 PC=7 count=21
+  ROB 21 pc=3 type=load ready=0
+  ROB 22 pc=4 type=alu ready=0
+  ROB 23 pc=5 type=store ready=0
+  ROB 24 pc=6 type=alu ready=1
+  ROB 25 pc=7 type=branch ready=1
+  ROB 26 pc=2 type=load ready=0
+  ROB 27 pc=3 type=load ready=0
+  ROB 28 pc=4 type=alu ready=0
+  ROB 29 pc=5 type=store ready=0
+  ROB 30 pc=6 type=alu ready=1
+  ROB 31 pc=7 type=branch ready=1
+  ROB 32 pc=2 type=load ready=0
+  ROB 33 pc=3 type=load ready=0
+  ROB 34 pc=4 type=alu ready=0
+  ROB 35 pc=5 type=store ready=0
+  ROB 36 pc=6 type=alu ready=1
+  ROB 37 pc=7 type=branch ready=1
+  ROB 38 pc=2 type=load ready=0
+  ROB 39 pc=3 type=load ready=0
+  ROB 40 pc=4 type=alu ready=0
+  ROB 41 pc=5 type=store ready=0
+Cycle 45:
+  Fetch: 1 PC=7 count=21
+  ROB 21 pc=3 type=load ready=0
+  ROB 22 pc=4 type=alu ready=0
+  ROB 23 pc=5 type=store ready=0
+  ROB 24 pc=6 type=alu ready=1
+  ROB 25 pc=7 type=branch ready=1
+  ROB 26 pc=2 type=load ready=0
+  ROB 27 pc=3 type=load ready=0
+  ROB 28 pc=4 type=alu ready=0
+  ROB 29 pc=5 type=store ready=0
+  ROB 30 pc=6 type=alu ready=1
+  ROB 31 pc=7 type=branch ready=1
+  ROB 32 pc=2 type=load ready=0
+  ROB 33 pc=3 type=load ready=0
+  ROB 34 pc=4 type=alu ready=0
+  ROB 35 pc=5 type=store ready=0
+  ROB 36 pc=6 type=alu ready=1
+  ROB 37 pc=7 type=branch ready=1
+  ROB 38 pc=2 type=load ready=0
+  ROB 39 pc=3 type=load ready=0
+  ROB 40 pc=4 type=alu ready=0
+  ROB 41 pc=5 type=store ready=0
+Cycle 46:
+  Fetch: 1 PC=7 count=21
+  ROB 21 pc=3 type=load ready=1
+  ROB 22 pc=4 type=alu ready=0
+  ROB 23 pc=5 type=store ready=0
+  ROB 24 pc=6 type=alu ready=1
+  ROB 25 pc=7 type=branch ready=1
+  ROB 26 pc=2 type=load ready=0
+  ROB 27 pc=3 type=load ready=0
+  ROB 28 pc=4 type=alu ready=0
+  ROB 29 pc=5 type=store ready=0
+  ROB 30 pc=6 type=alu ready=1
+  ROB 31 pc=7 type=branch ready=1
+  ROB 32 pc=2 type=load ready=0
+  ROB 33 pc=3 type=load ready=0
+  ROB 34 pc=4 type=alu ready=0
+  ROB 35 pc=5 type=store ready=0
+  ROB 36 pc=6 type=alu ready=1
+  ROB 37 pc=7 type=branch ready=1
+  ROB 38 pc=2 type=load ready=0
+  ROB 39 pc=3 type=load ready=0
+  ROB 40 pc=4 type=alu ready=0
+  ROB 41 pc=5 type=store ready=0
