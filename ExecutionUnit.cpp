@@ -46,7 +46,7 @@ void ExecutionUnit::executeCycle() {
         auto front = pipeline.front();
         pipeline.pop();
         front.second--;
-        
+
         if (front.second == 0) {
             RSEntry& entry = front.first;
             int val1 = entry.val1;

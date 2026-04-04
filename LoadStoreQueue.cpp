@@ -37,11 +37,6 @@ void LoadStoreQueue::executeCycle(std::vector<int>& Memory) {
     // wait until both operands are ready before starting
     if (!front.ready1 || !front.ready2) return;
 
-    if (cycles_left == 0)
-        cycles_left = latency;
-
-    cycles_left--;
-
     if (cycles_left == 0) {
         int addr = front.val1 + front.imm;
 
@@ -61,5 +56,8 @@ void LoadStoreQueue::executeCycle(std::vector<int>& Memory) {
         }
 
         lsq.pop();
+        cycles_left = latency;
     }
+    cycles_left--;
+    
 }
