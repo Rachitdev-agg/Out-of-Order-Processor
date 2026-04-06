@@ -77,4 +77,5 @@ struct RSEntry {
   int imm = 0;
   int predicted_pc = -1; // for branches
   int inst_pc = -1;      // instruction PC, used to find oldest entry
+  int cycles_left = 0;   // per-entry latency countdown (LSQ only)
 };

@@ -6,8 +6,7 @@ LoadStoreQueue::LoadStoreQueue(int lat, int size) {
 }
 
 void LoadStoreQueue::capture(int tag, int val) {
-  // need to snoop all entries in the queue
-  // std::queue doesn't support iteration, so we rebuild it
+  // Snoop all entries — std::queue doesn't support iteration, so rebuild it.
   std::queue<RSEntry> temp;
   while (!lsq.empty()) {
     RSEntry entry = lsq.front();
@@ -26,45 +25,78 @@ void LoadStoreQueue::capture(int tag, int val) {
 }
 
 void LoadStoreQueue::executeCycle(std::vector<int> &Memory) {
+  // Reset legacy single-result fields each cycle.
   has_result = false;
   has_exception = false;
   store_ready = false;
+  results_this_cycle.clear();
 
-  if (lsq.empty()) {
-    cycles_left = latency; // Reset latency for next operation
+  if (lsq.empty())
     return;
-  }
 
-  RSEntry &front = lsq.front();
+  // Iterate every entry in the queue.  For each:
+  //   - If operands are not ready: keep as-is (no latency decrement).
+  //   - If operands ready: decrement per-entry cycles_left.
+  //     When it hits 0: complete the operation and do NOT requeue the entry.
+  std::queue<RSEntry> remaining;
 
-  // wait until both operands are ready before starting
-  if (!front.ready1 || !front.ready2) {
-    cycles_left = latency; // Reset latency if stalled on operands
-    return;
-  }
+  while (!lsq.empty()) {
+    RSEntry entry = lsq.front();
+    lsq.pop();
 
-  cycles_left--;
-
-  if (cycles_left == 0) {
-    int addr = front.val1 + front.imm;
-
-    if (front.op == OpCode::LW) {
-      if (addr < 0 || addr >= (int)Memory.size()) {
-        has_exception = true;
-        result_val = 0;
-      } else {
-        result_val = Memory[addr];
-      }
-      result_tag = front.dest_tag;
-      has_result = true;
-    } else { // SW
-      store_addr = addr;
-      store_data = front.val2;
-      store_ready = true;
-      store_tag = front.dest_tag;
+    if (!entry.ready1 || !entry.ready2) {
+      // Operands not yet available — stall this entry, keep it unchanged.
+      remaining.push(entry);
+      continue;
     }
 
-    lsq.pop();             // Both loads and stores pop immediately
-    cycles_left = latency; // reset for next instruction
+    // Operands ready: tick down.
+    entry.cycles_left--;
+
+    if (entry.cycles_left > 0) {
+      // Still in-flight; keep it.
+      remaining.push(entry);
+      continue;
+    }
+
+    // cycles_left == 0: operation complete this cycle.
+    int addr = entry.val1 + entry.imm;
+    LSQResult res{};
+    res.result_tag = entry.dest_tag;
+
+    if (entry.op == OpCode::LW) {
+      res.is_load = true;
+      if (addr < 0 || addr >= (int)Memory.size()) {
+        res.has_exception = true;
+        res.result_val = 0;
+      } else {
+        res.has_exception = false;
+        res.result_val = Memory[addr];
+      }
+      results_this_cycle.push_back(res);
+
+      // Also populate legacy fields (last completing load wins if multiple,
+      // but the full list in results_this_cycle is what the processor uses).
+      has_result = true;
+      has_exception = res.has_exception;
+      result_val = res.result_val;
+      result_tag = res.result_tag;
+
+    } else { // SW
+      res.is_load = false;
+      res.store_addr = addr;
+      res.store_data = entry.val2;
+      res.store_tag = entry.dest_tag;
+      results_this_cycle.push_back(res);
+
+      // Legacy fields
+      store_ready = true;
+      store_addr = res.store_addr;
+      store_data = res.store_data;
+      store_tag = res.store_tag;
+    }
+    // Do NOT push back — entry is retired from the LSQ.
   }
+
+  lsq = remaining;
 }

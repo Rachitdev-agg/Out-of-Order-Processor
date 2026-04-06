@@ -249,20 +249,8 @@ void Processor::broadcastOnCDB() {
       }
     }
   }
-  if (lsq->has_result) {
-    int tag = lsq->result_tag;
-    int val = lsq->result_val;
-    for (auto &u : units)
-      u.capture(tag, val);
-    lsq->capture(tag, val);
-    if (tag != -1) {
-      ROB[tag].value = val;
-      ROB[tag].ready = true;
-      if (lsq->has_exception) {
-        ROB[tag].exception = true;
-      }
-    }
-  }
+  // Note: LSQ load results are broadcast inside stageExecuteAndBroadcast()
+  // via results_this_cycle, so no lsq->has_result handling is needed here.
 }
 
 void Processor::stageFetch() {
@@ -429,6 +417,7 @@ void Processor::stageDecode() {
       rse.ready2 = true;
 
     if (type == UnitType::LOADSTORE) {
+      rse.cycles_left = lsq->latency; // per-entry latency starts counting when operands become ready
       lsq->lsq.push(rse);
     } else {
       target_unit->rs[rs_idx] = rse;
@@ -453,14 +442,30 @@ void Processor::stageExecuteAndBroadcast() {
   }
   lsq->executeCycle(Memory);
 
-  if (lsq->store_ready) {
-    int tag = lsq->store_tag;
-    if (tag != -1) {
-      ROB[tag].dest = lsq->store_addr;  // Store memory addr here
-      ROB[tag].value = lsq->store_data; // Store memory value here
-      ROB[tag].ready = true;
+  // Process ALL results produced by the LSQ this cycle (parallel execution).
+  for (auto &res : lsq->results_this_cycle) {
+    if (res.is_load) {
+      // Broadcast load result on CDB immediately.
+      int tag = res.result_tag;
+      int val = res.result_val;
+      for (auto &u : units)
+        u.capture(tag, val);
+      lsq->capture(tag, val);
+      if (tag != -1) {
+        ROB[tag].value = val;
+        ROB[tag].ready = true;
+        if (res.has_exception)
+          ROB[tag].exception = true;
+      }
+    } else {
+      // Store: record address+value in ROB so commit can write memory.
+      int tag = res.store_tag;
+      if (tag != -1) {
+        ROB[tag].dest = res.store_addr;
+        ROB[tag].value = res.store_data;
+        ROB[tag].ready = true;
+      }
     }
-    lsq->store_ready = false;
   }
 }
 
